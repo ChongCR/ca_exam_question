@@ -34,5 +34,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    
+    'api' => [
+        'base_url' => env('API_BASE_URL', 'https://test.boaal.com'),
+        'email' => env('API_EMAIL', 'candidate@example.com'),
+    ],
 
 ];
