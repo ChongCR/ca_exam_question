@@ -15,10 +15,6 @@ Route::get('/instructions', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get("investors", [InvestorController::class, 'index'])->name('investor.index');
-Route::get("funds", [FundController::class, 'index'])->name('funds.index');
-Route::get("investments", [InvestmentController::class, 'index'])->name('investments.index');
-Route::get("graph", [GraphController::class, 'index'])->name('graph.index');
 Route::get('/exam', function () {
     return view('exam.index');
 })->name('exam.index');
@@ -31,7 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::post("investors", [InvestorController::class, 'store'])->name('investor.store');
     Route::get("investors/{investor}/edit", [InvestorController::class, 'edit'])->name('investor.edit');
     Route::put("investors/{investor}", [InvestorController::class, 'update'])->name('investor.update');
-
+    Route::get("investors", [InvestorController::class, 'index'])->name('investor.index');
+    Route::get("funds", [FundController::class, 'index'])->name('funds.index');
+    Route::get("investments", [InvestmentController::class, 'index'])->name('investments.index');
+    Route::get("graph", [GraphController::class, 'index'])->name('graph.index');
 });
 
 require __DIR__ . '/auth.php';
