@@ -36,8 +36,8 @@ return [
     ],
     
     'api' => [
-        'base_url' => env('API_BASE_URL', 'https://test.boaal.com'),
-        'email' => env('API_EMAIL', 'candidate@example.com'),
+        'base_url' => env('API_BASE_URL', 'https://exam.cardinalalpha.com'),
+        'email' => env('API_EMAIL', 'chongcr128@gmail.com'),
     ],
 
 ];

@@ -33,8 +33,8 @@ class ApiAuthService
      */
     public function __construct()
     {
-        $this->baseUrl = config('services.api.base_url', 'https://test.boaal.com');
-        $this->email = config('services.api.email', 'candidate@example.com');
+        $this->baseUrl = config('services.api.base_url', 'https://exam.cardinalalpha.com');
+        $this->email = config('services.api.email', 'chongcr128@gmail.com');
     }
 
     /**
@@ -66,6 +66,7 @@ class ApiAuthService
     private function generateAndCacheToken(): ?string
     {
         try {
+
             $response = Http::post("{$this->baseUrl}/api/generate-token", [
                 'email' => $this->email,
             ]);
