@@ -49,7 +49,8 @@ class InvestorController extends Controller
             $token = $this->authService->getToken();
 
             if (!$token) {
-                return back()->with('error', 'Failed to authenticate with API');
+                Log::error('API authentication failed during investor creation');
+                return back()->with('error', 'Failed to authenticate with API')->withInput();
             }
 
             // Push to API
@@ -71,12 +72,20 @@ class InvestorController extends Controller
                 return redirect()->route('investor.index')
                     ->with('success', 'Investor created successfully');
             } else {
-                Log::error('API investor creation failed', ['response' => $response->body()]);
+                Log::error('API investor creation failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'data' => $validated
+                ]);
                 return back()->with('error', 'Failed to create investor on API')
                     ->withInput();
             }
         } catch (\Exception $e) {
-            Log::error('Investor creation exception', ['error' => $e->getMessage()]);
+            Log::error('Investor creation exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $validated
+            ]);
             return back()->with('error', 'An error occurred: ' . $e->getMessage())
                 ->withInput();
         }
@@ -102,12 +111,19 @@ class InvestorController extends Controller
             'contact_number' => 'required|string|max:255',
         ]);
 
+        $originalData = $investor->only(['name', 'email', 'contact_number']);
+
         try {
             // Get authentication token
             $token = $this->authService->getToken();
 
             if (!$token) {
-                return back()->with('error', 'Failed to authenticate with API');
+                Log::error('API authentication failed during investor update', [
+                    'investor_id' => $investor->id,
+                    'original' => $originalData,
+                    'attempted' => $validated
+                ]);
+                return back()->with('error', 'Failed to authenticate with API')->withInput();
             }
 
             // Push to API
@@ -125,15 +141,33 @@ class InvestorController extends Controller
                     'contact_number' => $apiData['contact_number'],
                 ]);
 
+                Log::info('API investor update successful', [
+                    'investor_id' => $investor->id,
+                    'original' => $originalData,
+                    'updated' => $validated
+                ]);
+
                 return redirect()->route('investor.index')
                     ->with('success', 'Investor updated successfully');
             } else {
-                Log::error('API investor update failed', ['response' => $response->body()]);
+                Log::error('API investor update failed', [
+                    'investor_id' => $investor->id,
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'original' => $originalData,
+                    'attempted' => $validated
+                ]);
                 return back()->with('error', 'Failed to update investor on API')
                     ->withInput();
             }
         } catch (\Exception $e) {
-            Log::error('Investor update exception', ['error' => $e->getMessage()]);
+            Log::error('Investor update exception', [
+                'investor_id' => $investor->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'original' => $originalData,
+                'attempted' => $validated
+            ]);
             return back()->with('error', 'An error occurred: ' . $e->getMessage())
                 ->withInput();
         }
